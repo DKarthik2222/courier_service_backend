@@ -1,6 +1,6 @@
 # Recipe Backend with Node
 
-This application allows users to create and maintain a list of recipes that have steps and ingredients. Please visit https://github.com/OC-ComputerScience/travel-frontend for the Vue 3 frontend repository.
+This application allows users to create and maintain a list of recipes that have steps and ingredients. Please visit https://github.com/OC-ComputerScience/courier-frontend for the Vue 3 frontend repository.
 
 #### Please note:
 
@@ -11,7 +11,7 @@ This application allows users to create and maintain a list of recipes that have
 1. Clone the project into your **XAMPP/xamppfiles/htdocs** directory.
 
 ```
-git clone https://github.com/OC-ComputerScience/travel-backend.git
+git clone https://github.com/OC-ComputerScience/courier-backend.git
 ```
 
 2. Install the project.
