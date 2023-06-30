@@ -43,7 +43,7 @@ authenticate = async (req, res, require = true) => {
         };
       } else {
         return res.status(401).send({
-          message: "User not found!",
+          message: "Employee not found!",
         });
       }
     }
