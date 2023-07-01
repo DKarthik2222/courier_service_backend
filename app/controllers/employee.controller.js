@@ -41,11 +41,11 @@ exports.create = async (req, res) => {
         res.status(500).send({
           status: "Failure",
           message: "This email is already in use.",
+          data: null,
         });
         return "This email is already in use.";
       } else {
         console.log("email not found");
-
         let salt = await getSalt();
         let hash = await hashPassword(req.body.password, salt);
 
@@ -74,29 +74,32 @@ exports.create = async (req, res) => {
             };
             await Session.create(session).then(async (data) => {
               let sessionId = data.id;
-              let token = await encrypt(sessionId);
-              let userInfo = {
-                email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                id: userId,
-                token: token,
-              };
-              res.send(userInfo);
+              await encrypt(sessionId);
+              res.send({
+                status: "Success",
+                message: "Employee created successfully",
+                data: null,
+              });
             });
           })
           .catch((err) => {
             console.log(err);
             res.status(500).send({
+              status: "Failure",
               message:
                 err.message ||
                 "Some error occurred while creating the Employee.",
+              data: null,
             });
           });
       }
     })
     .catch((err) => {
-      return err.message || "Error retrieving Employee with email=" + email;
+      return res.status(500).send({
+        status: "Failure",
+        message: err.message || "Error retrieving Employee with email=" + email,
+        data: null,
+      });
     });
 };
 
@@ -118,11 +121,17 @@ exports.findAll = (req, res) => {
     ],
   })
     .then((data) => {
-      res.send(data);
+      res.send({
+        status: "Success",
+        message: "Employees Fetched Successfully",
+        data: data,
+      });
     })
     .catch((err) => {
       res.status(500).send({
+        status: "Failure",
         message: err.message || "Some error occurred while retrieving users.",
+        data: null,
       });
     });
 };
@@ -135,6 +144,7 @@ exports.findOne = (req, res) => {
     where: {
       empId: id,
     },
+    attributes: { exclude: ["password", "salt"] },
     include: [
       {
         model: db.roles,
@@ -145,16 +155,24 @@ exports.findOne = (req, res) => {
   })
     .then((data) => {
       if (data) {
-        res.send(data);
+        res.send({
+          status: "Success",
+          message: "Employees Fetched Successfully",
+          data: data,
+        });
       } else {
         res.status(404).send({
+          status: "Failure",
           message: `Cannot find Employee with id = ${id}.`,
+          data: null,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
+        status: "Failure",
         message: err.message || "Error retrieving Employee with id = " + id,
+        data: null,
       });
     });
 };
@@ -212,17 +230,23 @@ exports.update = async (req, res) => {
     .then((number) => {
       if (number == 1) {
         res.send({
+          status: "Success",
           message: "Employee was updated successfully.",
+          data: null,
         });
       } else {
         res.send({
+          status: "Failure",
           message: `Cannot update Employee with id = ${id}. Maybe Employee was not found or req.body is empty!`,
+          data: null,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
+        status: "Failure",
         message: err.message || "Error updating Employee with id =" + id,
+        data: null,
       });
     });
 };
@@ -237,17 +261,23 @@ exports.delete = (req, res) => {
     .then((number) => {
       if (number == 1) {
         res.send({
+          status: "Success",
           message: "Employee was deleted successfully!",
+          data: data,
         });
       } else {
         res.send({
+          status: "Failure",
           message: `Cannot delete Employee with id = ${id}. Maybe Employee was not found!`,
+          data: null,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
+        status: "Failure",
         message: err.message || "Could not delete Employee with id = " + id,
+        data: null,
       });
     });
 };
