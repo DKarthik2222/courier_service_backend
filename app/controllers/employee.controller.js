@@ -3,6 +3,7 @@ const Employee = db.employee;
 const Session = db.session;
 const Op = db.Sequelize.Op;
 const { encrypt, getSalt, hashPassword } = require("../authentication/crypto");
+const { Role } = require("parse");
 
 // Create and Save a new Employee
 exports.create = async (req, res) => {
@@ -101,10 +102,21 @@ exports.create = async (req, res) => {
 
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
-  const id = req.query.id;
-  var condition = id ? { id: { [Op.like]: `%${id}%` } } : null;
-
-  Employee.findAll({ where: condition })
+  Employee.findAll({
+    where: {
+      roleId: {
+        [Op.ne]: 1,
+      },
+    },
+    attributes: { exclude: ["password", "salt"] },
+    include: [
+      {
+        model: db.roles,
+        attributes: ["roleId", "roleName"],
+        required: true,
+      },
+    ],
+  })
     .then((data) => {
       res.send(data);
     })
@@ -119,7 +131,18 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Employee.findByPk(id)
+  Employee.findOne({
+    where: {
+      empId: id,
+    },
+    include: [
+      {
+        model: db.roles,
+        attributes: ["roleId", "roleName"],
+        required: true,
+      },
+    ],
+  })
     .then((data) => {
       if (data) {
         res.send(data);
@@ -163,10 +186,27 @@ exports.findByEmail = (req, res) => {
 };
 
 // Update a Employee by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
   const id = req.params.id;
+  let user;
+  if (req.body.password !== undefined) {
+    let salt = await getSalt();
+    let hash = await hashPassword(req.body.password, salt);
 
-  Employee.update(req.body, {
+    // Create a Employee
+    user = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      password: hash,
+      roleId: req.body.roleId,
+      salt: salt,
+    };
+  } else {
+    user = req.body;
+  }
+
+  Employee.update(user, {
     where: { empId: id },
   })
     .then((number) => {
