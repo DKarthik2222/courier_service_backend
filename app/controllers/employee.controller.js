@@ -263,7 +263,7 @@ exports.delete = (req, res) => {
         res.send({
           status: "Success",
           message: "Employee was deleted successfully!",
-          data: data,
+          data: null,
         });
       } else {
         res.send({
