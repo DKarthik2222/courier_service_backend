@@ -53,6 +53,7 @@ exports.create = async (req, res) => {
         const user = {
           firstName: req.body.firstName,
           lastName: req.body.lastName,
+          phone: req.body.phone,
           email: req.body.email,
           password: hash,
           roleId: req.body.roleId,
@@ -215,6 +216,7 @@ exports.update = async (req, res) => {
     user = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
+      phone: req.body.phone,
       email: req.body.email,
       password: hash,
       roleId: req.body.roleId,

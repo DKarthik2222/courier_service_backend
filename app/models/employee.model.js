@@ -20,6 +20,13 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false,
       unique: true,
     },
+    phone: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        is: /^\+[1-9]\d{1,14}$/, // Regex pattern for phone number format validation
+      },
+    },
     password: {
       type: Sequelize.BLOB,
       allowNull: false,
