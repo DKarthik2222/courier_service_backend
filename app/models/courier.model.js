@@ -4,18 +4,6 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    pickUpLocation: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    dropLocation: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    fair: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
     statusId: {
       type: Sequelize.INTEGER,
       allowNull: false,
@@ -27,6 +15,10 @@ module.exports = (sequelize, Sequelize) => {
     comments: {
       type: Sequelize.STRING,
       allowNull: true,
+    },
+    assignedTo: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
     },
   });
 
