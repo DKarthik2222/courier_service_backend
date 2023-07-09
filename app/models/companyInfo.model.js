@@ -1,26 +1,26 @@
 module.exports = (sequelize, Sequelize) => {
-  const Courier = sequelize.define("courier", {
-    phone: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
-    statusId: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
-    lastUpdatedBy: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
-    comments: {
+  const CompanyInfo = sequelize.define("company_info", {
+    location: {
       type: Sequelize.STRING,
-      allowNull: true,
+      allowNull: false,
     },
-    assignedTo: {
+    pricePerBlock: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
+    timePerBlock: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    onTimeBonus: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },{
+    tableName: 'company_info',
+    timestamps: false,
+    freezeTableName: true
   });
 
-  return Courier;
+  return CompanyInfo;
 };
