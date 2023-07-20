@@ -4,7 +4,7 @@ module.exports = (app) => {
     var router = require("express").Router();
   
   //   Retrieve all CompanyInfo
-    router.get("/companyInfo/", [authenticateRoute], CompanyInfo.findAll);
+    router.get("/companyInfo/", [authenticateRoute], CompanyInfo.findOne);
   
     // Update a CompanyInfo with id
     router.put("/companyInfo/:id", [authenticateRoute], CompanyInfo.update);
