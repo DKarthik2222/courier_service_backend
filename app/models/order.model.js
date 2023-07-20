@@ -4,11 +4,11 @@ module.exports = (sequelize, Sequelize) => {
     {
       sender: {
         type: Sequelize.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
       receiver: {
         type: Sequelize.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
       pickupPoint: {
         type: Sequelize.STRING,
@@ -36,11 +36,11 @@ module.exports = (sequelize, Sequelize) => {
       },
       assignedBy: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       assignedTo: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       assignedTime: {
         type: Sequelize.DATE,
@@ -53,6 +53,10 @@ module.exports = (sequelize, Sequelize) => {
       deliveredTime: {
         type: Sequelize.DATE,
         allowNull: true,
+      },
+      requestedDateTime: {
+        type: Sequelize.DATE,
+        allowNull: false,
       },
       deliveryInstructions: {
         type: Sequelize.STRING,
