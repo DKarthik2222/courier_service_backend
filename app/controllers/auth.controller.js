@@ -27,6 +27,7 @@ exports.login = async (req, res) => {
         let token = await encrypt(sessionId);
         let companyInfo = await db.companyInfo.findOne();
         let userInfo = {
+          empId: user.empId,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,

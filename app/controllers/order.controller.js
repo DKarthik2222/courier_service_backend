@@ -271,6 +271,50 @@ exports.update = async (req, res) => {
     });
   }
 };
+// Update a Order by the id in the request
+exports.updateAssigned = async (req, res) => {
+  try {
+    if (req.body.assignedTo === undefined) {
+      const error = new Error("assignedTo cannot be empty for order!");
+      error.message = "assignedTo cannot be empty for order!";
+      error.statusCode = 400;
+      throw error;
+    }
+    const id = req.params.id;
+    req.body.statusId = 2;
+    await Order.update(req.body, {
+      where: { id: id },
+    })
+      .then((number) => {
+        if (number == 1) {
+          res.send({
+            status: "Success",
+            message: "Order assigned successfully.",
+            data: null,
+          });
+        } else {
+          res.send({
+            status: "Failure",
+            message: `Cannot update Order with id = ${id}. Maybe Order was not found or req.body is empty!`,
+            data: null,
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({
+          status: "Failure",
+          message: err.message || "Error updating Order with id =" + id,
+          data: null,
+        });
+      });
+  } catch (e) {
+    return res.status(500).send({
+      status: "Failure",
+      message: e.message,
+      data: null,
+    });
+  }
+};
 
 // Delete a Order with the specified id in the request
 exports.delete = (req, res) => {

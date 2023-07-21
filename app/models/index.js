@@ -27,7 +27,7 @@ db.employee.hasMany(db.session, { onDelete: "CASCADE" });
 db.session.belongsTo(db.employee, { onDelete: "CASCADE" });
 
 db.roles.hasMany(db.employee, { foreignKey: "roleId" });
-db.employee.belongsTo(db.roles, { foreignKey: "roleId" });
+db.employee.belongsTo(db.roles, { foreignKey: "roleId", as: "role" });
 
 db.order.belongsTo(db.status, { foreignKey: "statusId", as: "status" });
 db.status.hasMany(db.order, { foreignKey: "statusId" });

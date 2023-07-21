@@ -11,6 +11,12 @@ module.exports = (app) => {
 
   // Retrieve a single Employee with id
   router.get("/employee/:id", [authenticateRoute], Employee.findOne);
+  // Retrieve a single delievry agent with email
+  router.get(
+    "/employee/deliveryAgent/:email",
+    [authenticateRoute],
+    Employee.findDeliveryAgentByEmail
+  );
 
   // Update a Employee with id
   router.put("/employee/:id", [authenticateRoute], Employee.update);
