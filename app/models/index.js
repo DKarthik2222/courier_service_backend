@@ -46,6 +46,7 @@ db.order.belongsTo(db.employee, {
 });
 db.order.belongsTo(db.employee, {
   foreignKey: "assignedTo",
+  as: "assignedToDetails",
 });
 
 module.exports = db;

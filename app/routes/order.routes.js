@@ -7,7 +7,17 @@ module.exports = (app) => {
   router.post("/order/", [authenticateRoute], Order.create);
 
   //   Retrieve all orders
-  router.get("/orders/", [authenticateRoute], Order.findAll);
+  router.get(
+    "/orders/:statusId/:customerId",
+    [authenticateRoute],
+    Order.findAll
+  );
+
+  router.get(
+    "/ordersAssignedTo/:empId",
+    [authenticateRoute],
+    Order.findAllByEmployee
+  );
 
   // Retrieve a single Order with id
   router.get("/order/:id", [authenticateRoute], Order.findOne);
@@ -17,6 +27,13 @@ module.exports = (app) => {
 
   // assign Order with id
   router.put("/order/assign/:id", [authenticateRoute], Order.updateAssigned);
+
+  // assign Order with id
+  router.put(
+    "/order/updateStatus/:id",
+    [authenticateRoute],
+    Order.updateOrderStatus
+  );
 
   // Delete a Order with id
   router.delete("/order/:id", [authenticateRoute], Order.delete);
