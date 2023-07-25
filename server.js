@@ -54,6 +54,8 @@ db.sequelize
             pricePerBlock: "1.5",
             timePerBlock: "3",
             onTimeBonus: "10",
+            billingCycle: "Monthly",
+            billingExpression: "*1/****",
           })
           .then(() => {
             console.log("Records are inserted into table companyInfo");

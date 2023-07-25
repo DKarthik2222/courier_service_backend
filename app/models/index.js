@@ -45,9 +45,6 @@ db.order.belongsTo(db.customers, {
 });
 
 db.order.belongsTo(db.employee, {
-  foreignKey: "assignedBy",
-});
-db.order.belongsTo(db.employee, {
   foreignKey: "assignedTo",
   as: "assignedToDetails",
 });
