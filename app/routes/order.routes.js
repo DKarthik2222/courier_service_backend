@@ -28,7 +28,14 @@ module.exports = (app) => {
   // assign Order with id
   router.put("/order/assign/:id", [authenticateRoute], Order.updateAssigned);
   router.put("/order/pickup/:id", [authenticateRoute], Order.updatePickup);
-  router.put("/order/deliveryStatus/:id", [authenticateRoute], Order.updateDeliveryStatus);
+  router.put(
+    "/order/deliveryStatus/:id",
+    [authenticateRoute],
+    Order.updateDeliveryStatus
+  );
+
+  // generate orders bill
+  router.post("order/generateBill", [authenticateRoute, Order.generateBill]);
 
   // assign Order with id
   router.put(

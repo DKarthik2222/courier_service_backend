@@ -2,6 +2,7 @@ require("dotenv").config();
 const { Op } = require("sequelize");
 const express = require("express");
 const cors = require("cors");
+const {triggerRunBillGeneration} = require('./app/utilities/billGeneration')
 
 const app = express();
 
@@ -111,6 +112,8 @@ db.sequelize
     console.log("Error creating table");
   });
 
+triggerRunBillGeneration()
+  
 var corsOptions = {
   origin: "http://localhost:8081",
 };

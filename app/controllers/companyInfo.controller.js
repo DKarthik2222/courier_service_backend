@@ -1,4 +1,5 @@
 const db = require("../models");
+const { triggerRunBillGeneration, scheduleRef } = require("../utilities/billGeneration");
 const CompanyInfo = db.companyInfo;
 
 // Retrieve all CompanyInfo from the database.
@@ -30,6 +31,7 @@ exports.update = async (req, res) => {
   })
     .then((number) => {
       if (number == 1) {
+        triggerRunBillGeneration()
         res.send({
           status: "Success",
           message: "CompanyInfo was updated successfully.",

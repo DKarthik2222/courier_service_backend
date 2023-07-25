@@ -523,6 +523,24 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
+exports.generateBill = async (req, res) => {
+  try {
+    await triggerRunBillGeneration()
+    res.status(200).send({
+      status: "Success",
+      message: "Bill Reports are successfully generated",
+      data: null,
+    });
+  }catch (e) {
+    console.log('Error in generating the bill', e)
+    res.status(500).send({
+      status: "Failure",
+      message: "Error in generating the bill",
+      data: null,
+    });
+  }
+}
+
 // Delete a Order with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;

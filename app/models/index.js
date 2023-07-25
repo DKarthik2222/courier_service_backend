@@ -32,7 +32,7 @@ db.employee.belongsTo(db.roles, { foreignKey: "roleId", as: "role" });
 db.order.belongsTo(db.status, { foreignKey: "statusId", as: "status" });
 db.status.hasMany(db.order, { foreignKey: "statusId" });
 
-db.customers.hasMany(db.order, { foreignKey: "sender" });
+db.customers.hasMany(db.order, { as: 'sentOrders', foreignKey: "sender" });
 db.order.belongsTo(db.customers, {
   foreignKey: "sender",
   as: "senderDetails",

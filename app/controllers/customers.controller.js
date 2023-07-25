@@ -1,6 +1,7 @@
 const db = require("../models");
 const Op = db.Sequelize.Op;
 const Customer = db.customers;
+const { sendMail } = require("../utilities/email");
 
 // Create and Save a new Customer
 exports.create = async (req, res) => {
@@ -136,7 +137,7 @@ exports.create = async (req, res) => {
         } else {
           res.send({
             status: "Success",
-            message: "This email is soft delted.",
+            message: "This email is soft deleted.",
             data: {
               accoutExists: true,
               message: `This email (${data.email}) is already registered but soft deleted. Please click on confirm if you wanted to reactivate it and all fields will get updated...`,
@@ -151,6 +152,7 @@ exports.create = async (req, res) => {
       // Save Customer in the database
       await Customer.create(req.body)
         .then((data) => {
+          sendMail(req.body.email, 'Customer Onboarding', 'customerOnBoard', '')
           res.send({
             status: "Success",
             message: "Customer created successfully",
