@@ -1,4 +1,4 @@
-function generateCustomerOnboardEmailFormat ({ companyName, customerName, phone }) {
+function generateCustomerOnboardEmailFormat ({ companyName, customerName, companyPhone }) {
     return (
         `<!DOCTYPE html>
         <html>
@@ -48,7 +48,7 @@ function generateCustomerOnboardEmailFormat ({ companyName, customerName, phone 
               <p>Thank you for choosing ${companyName}. We look forward to serving you and building a long-lasting partnership.</p>
               <p>If you have any questions or need assistance, feel free to reach out to our friendly support team.</p>
               <p>Once again, welcome aboard!</p>
-              <p>For new courier orders, simply call our hotline at ${phone}. Our team will be delighted to assist you in creating a new courier order.</p>
+              <p>For new courier orders, simply call our hotline at ${companyPhone}. Our team will be delighted to assist you in creating a new courier order.</p>
               <p>Sincerely,</p>
               <p>The ${companyName} Team</p>
             </div>
@@ -61,3 +61,6 @@ function generateCustomerOnboardEmailFormat ({ companyName, customerName, phone 
 
 
 
+module.exports = {
+  generateCustomerOnboardEmailFormat
+}

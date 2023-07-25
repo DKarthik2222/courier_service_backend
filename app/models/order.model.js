@@ -62,6 +62,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      lastStatusUpdate: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      }
     },
     {
       timestamps: false,

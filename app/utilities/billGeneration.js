@@ -4,7 +4,7 @@ var nodemailer = require("nodemailer");
 const { jsPDF } = require("jspdf");
 require("jspdf-autotable");
 const fs = require("fs");
-const { generateBillEmailFormat } = require('./generateBillEmailFormat');
+const { generateBillEmailFormat } = require("./generateBillEmailFormat");
 const Company = db.companyInfo;
 const Customer = db.customers;
 const scheduleRef = {};
@@ -16,12 +16,6 @@ var transporter = nodemailer.createTransport({
   },
 });
 let isTaskRunning = false;
-
-// Function to load font from file and return base64 encoded font data
-function getBase64FontData(fontPath) {
-  const fontData = fs.readFileSync(fontPath);
-  return Buffer.from(fontData).toString("base64");
-}
 
 // Function to generate the PDF bill
 function generatePDF(customer, orders, company) {
@@ -36,8 +30,7 @@ function generatePDF(customer, orders, company) {
   );
 
   // Footer company details
-  const companyDetails =
-    `${company?.name} | Address: ${company?.avenue}, ${company.street}, ${company?.block}`;
+  const companyDetails = `${company?.name} | Address: ${company?.avenue}, ${company.street}, ${company?.block}`;
 
   // Title and layout customization
   doc.setFontSize(16);
@@ -75,7 +68,7 @@ function generatePDF(customer, orders, company) {
   ];
   const tableData = orders.map((order) => [
     order.id,
-    order.receiverDetails.firstName + ' ' + order.receiverDetails.lastName,
+    order.receiverDetails.firstName + " " + order.receiverDetails.lastName,
     order.pickupPoint.split("/")[1],
     order.dropoffPoint.split("/")[1],
     order.status.statusName,
@@ -123,27 +116,34 @@ function generatePDF(customer, orders, company) {
   return pdfDataUri;
 }
 
-const triggerRunBillGeneration = async () => {
+const triggerRunBillGeneration = async (schedule) => {
   Company.findOne({
-    attributes: ["billingCycle"],
+    attributes: ["billingExpression"],
   })
-    .then((data) => {
-      const billingCycle = data?.billingCycle;
+    .then(async (data) => {
+      const billingCycle = data?.billingExpression;
       console.log("billing Cycle", data);
       if (scheduleRef.billGeneration && isTaskRunning) {
         scheduleRef.billGeneration.stop();
         console.log("Previous schedule is stopped");
       }
-
-      scheduleRef.billGeneration = cron.schedule(billingCycle, async () => {
-        // Generate the PDF
+      if (schedule) {
+        scheduleRef.billGeneration = cron.schedule(billingCycle, async () => {
+          // Generate the PDF
+          try {
+            await generatePDFAndSendEmail();
+          } catch (e) {
+            console.log("Error occured", e);
+          }
+        });
+        isTaskRunning = true;
+      } else {
         try {
           await generatePDFAndSendEmail();
         } catch (e) {
           console.log("Error occured", e);
         }
-      });
-      isTaskRunning = true;
+      }
     })
     .catch((e) => {
       console.log("billing Cycle", e);
@@ -173,21 +173,31 @@ const generatePDFAndSendEmail = async () => {
   });
   const company = await Company.findOne({
     where: {
-      id: 1
-    }
-  })
+      id: 1,
+    },
+  });
   customerWithOrders?.map(async (customer) => {
     const ordersMadeByCustomer = customer?.sentOrders;
+    const filterByLastBillGenerated = company.lastBillGenerated
+      ? ordersMadeByCustomer.filter(
+          (order) => new Date(order.lastStatusUpdate) > new Date(company.lastBillGenerated)
+        )
+      : filterByLastBillGenerated;
     if (ordersMadeByCustomer?.length > 0) {
       const customerDetails = {
-        name: customer?.firstName + ' ' +  customer?.lastName,
+        name: customer?.firstName + " " + customer?.lastName,
         phone: customer?.phone,
         email: customer?.email,
-        address: customer?.avenue + ' ' + customer?.street + ' ' + customer?.block,
+        address:
+          customer?.avenue + " " + customer?.street + " " + customer?.block,
       };
 
-      const pdfDataUri = generatePDF(customerDetails, ordersMadeByCustomer, company);
-      const customerName = customer?.firstName + ' ' +  customer?.lastName
+      const pdfDataUri = generatePDF(
+        customerDetails,
+        ordersMadeByCustomer,
+        company
+      );
+      const customerName = customer?.firstName + " " + customer?.lastName;
       transporter.sendMail(
         {
           from: "shvdjtravel@gmail.com",
@@ -202,10 +212,14 @@ const generatePDFAndSendEmail = async () => {
             },
           ],
         },
-        function (error, info) {
+        async function (error, info) {
           if (error) {
             console.log(error);
           } else {
+            await Company.update(
+              { lastBillGenerated: Sequelize.literal("CURRENT_TIMESTAMP") },
+              { where: { id: 1 } }
+            );
             console.log("Email sent: " + info.response);
           }
         }

@@ -25,13 +25,17 @@ exports.findOne = (req, res) => {
 // Update a CompanyInfo by the id in the request
 exports.update = async (req, res) => {
   let companyInfo = req.body;
+  const schedulePeriods = {Weekly: "0 9 * * 1", Monthly: "0 9 1 * *", Yearly: "0 9 1 1 *"}
+  if(companyInfo.billingCycle) {
+    companyInfo.billingExpression = schedulePeriods[companyInfo.billingCycle]
+  }
   const id = req.params.id;
   CompanyInfo.update(companyInfo, {
     where: { id: id },
   })
     .then((number) => {
       if (number == 1) {
-        triggerRunBillGeneration()
+        triggerRunBillGeneration(true)
         res.send({
           status: "Success",
           message: "CompanyInfo was updated successfully.",

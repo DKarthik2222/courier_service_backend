@@ -34,9 +34,6 @@ module.exports = (app) => {
     Order.updateDeliveryStatus
   );
 
-  // generate orders bill
-  router.post("order/generateBill", [authenticateRoute, Order.generateBill]);
-
   // assign Order with id
   router.put(
     "/order/updateStatus/:id",

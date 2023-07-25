@@ -56,7 +56,8 @@ db.sequelize
             timePerBlock: "3",
             onTimeBonus: "10",
             billingCycle: "Monthly",
-            billingExpression: "*1/****",
+            phone: "+1 (231) 231-3121",
+            billingExpression: "0 9 1 * *",
           })
           .then(() => {
             console.log("Records are inserted into table companyInfo");
@@ -112,7 +113,7 @@ db.sequelize
     console.log("Error creating table");
   });
 
-triggerRunBillGeneration()
+triggerRunBillGeneration(true)
   
 var corsOptions = {
   origin: "http://localhost:8081",

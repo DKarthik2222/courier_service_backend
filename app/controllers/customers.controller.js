@@ -2,6 +2,7 @@ const db = require("../models");
 const Op = db.Sequelize.Op;
 const Customer = db.customers;
 const { sendMail } = require("../utilities/email");
+const {triggerRunBillGeneration} = require('../utilities/billGeneration')
 
 // Create and Save a new Customer
 exports.create = async (req, res) => {
@@ -422,6 +423,26 @@ exports.update = async (req, res) => {
   });
 };
 
+// generateBill
+
+exports.generateBill = async (req, res) => {
+  try {
+    await triggerRunBillGeneration(false)
+    res.status(200).send({
+      status: "Success",
+      message: "Bill Reports are successfully generated",
+      data: null,
+    });
+  }catch (e) {
+    console.log('Error in generating the bill', e)
+    res.status(500).send({
+      status: "Failure",
+      message: "Error in generating the bill",
+      data: null,
+    });
+  }
+}
+
 // Delete a Customer with the specified id in the request
 exports.delete = async (req, res) => {
   try {
@@ -443,11 +464,19 @@ exports.delete = async (req, res) => {
       });
     }
     let customer = { isActive: false };
+    const customerDetails = await Customer.findOne({
+      where: {
+        id: id
+      }
+    })
     Customer.update(customer, {
       where: { id: id },
     })
       .then((number) => {
         if (number == 1) {
+          sendMail(customerDetails?.email, 'Account Deletion', 'customerAccountDeletion', ({
+            customerName: customerDetails?.firstName
+          }))
           res.send({
             status: "Success",
             message: "Customer was deleted successfully!",
