@@ -240,6 +240,54 @@ exports.findOne = (req, res) => {
       });
     });
 };
+exports.findOrdersByCustomer = (req, res) => {
+  const id = req.params.id;
+
+  db.order
+    .findAll({
+      where: {
+        sender: id,
+      },
+      include: [
+        {
+          model: db.employee,
+          as: "assignedToDetails",
+          attributes: ["empId", "firstName", "lastName"],
+        },
+        {
+          model: db.customers,
+          as: "receiverDetails",
+        },
+        {
+          model: db.status,
+          as: "status",
+        },
+      ],
+    })
+    .then((data) => {
+      if (data) {
+        res.send({
+          status: "Success",
+          message: "Orders Fetched Successfully",
+          data: data,
+        });
+      } else {
+        res.status(404).send({
+          status: "Failure",
+          message: `Cannot find orders of customer with id = ${id}.`,
+          data: null,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        status: "Failure",
+        message:
+          err.message || "Error retrieving Orders of Customer with id = " + id,
+        data: null,
+      });
+    });
+};
 // Find a single customer with an email id
 exports.findByEmail = (req, res) => {
   const email = req.params.email;
