@@ -182,8 +182,8 @@ const generatePDFAndSendEmail = async () => {
       ? ordersMadeByCustomer.filter(
           (order) => new Date(order.lastStatusUpdate) > new Date(company.lastBillGenerated)
         )
-      : filterByLastBillGenerated;
-    if (ordersMadeByCustomer?.length > 0) {
+      : ordersMadeByCustomer;
+    if (filterByLastBillGenerated?.length > 0) {
       const customerDetails = {
         name: customer?.firstName + " " + customer?.lastName,
         phone: customer?.phone,
@@ -217,7 +217,7 @@ const generatePDFAndSendEmail = async () => {
             console.log(error);
           } else {
             await Company.update(
-              { lastBillGenerated: Sequelize.literal("CURRENT_TIMESTAMP") },
+              { lastBillGenerated: db.Sequelize.literal("CURRENT_TIMESTAMP") },
               { where: { id: 1 } }
             );
             console.log("Email sent: " + info.response);

@@ -153,7 +153,7 @@ exports.create = async (req, res) => {
       // Save Customer in the database
       await Customer.create(req.body)
         .then((data) => {
-          sendMail(req.body.email, 'Customer Onboarding', 'customerOnBoard', '')
+          sendMail(req.body.email, 'Customer Onboarding', 'customerOnBoard', {customerName: req.body.firstName})
           res.send({
             status: "Success",
             message: "Customer created successfully",

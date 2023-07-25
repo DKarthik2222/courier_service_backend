@@ -12,6 +12,7 @@ const { generateOrderCancelEmailFormat } = require("./generateOrderCancelEmailFo
 const { generateOrderDeliveredEmailFormat } = require("./generateOrderDeliveredEmailFormat");
 const { generateOrderDelayEmailFormat } = require("./generateOrderDelayEmailFormat");
 const { generateOrderRejectedEmailFormat } = require("./generateOrderRejectedEmailFormat");
+const { generateOrderConfirmationEmailFormat } = require("./generateOrderConfirmationEmailFormat");
 const Company = db.companyInfo;
 
 var transporter = nodemailer.createTransport({

@@ -384,7 +384,7 @@ exports.updateAssigned = async (req, res) => {
     })
       .then((number) => {
         if (number == 1) {
-          sendMail(customerDetails?.mail, 'Order Update', 'orderAssigned', ({
+          sendMail(customerDetails?.email, 'Order Update', 'orderAssigned', ({
             customerName: customerDetails?.firstName,
             deliverAgentName: employeeDetails?.firstName,
             deliverAgentPhone: employeeDetails?.phone,
@@ -421,7 +421,7 @@ exports.updatePickup = async (req, res) => {
   try {
     const id = req.params.id;
     req.body.statusId = 3;
-    req.body.lastStatusUpdate = Sequelize.literal('CURRENT_TIMESTAMP')
+    req.body.lastStatusUpdate = db.Sequelize.literal('CURRENT_TIMESTAMP')
     const order = await db.order.findOne({
       where: {
         id: id
@@ -474,7 +474,7 @@ exports.updatePickup = async (req, res) => {
 exports.updateDeliveryStatus = async (req, res) => {
   try {
     const id = req.params.id;
-    req.body.lastStatusUpdate = Sequelize.literal('CURRENT_TIMESTAMP')
+    req.body.lastStatusUpdate = db.Sequelize.literal('CURRENT_TIMESTAMP')
     const order = await db.order.findOne({
       where: {
         id: id
@@ -581,7 +581,7 @@ exports.updateOrderStatus = async (req, res) => {
     } else {
       req.body.totalPrice = 0;
     }
-    req.body.lastStatusUpdate = Sequelize.literal('CURRENT_TIMESTAMP')
+    req.body.lastStatusUpdate = db.Sequelize.literal('CURRENT_TIMESTAMP')
     await Order.update(req.body, {
       where: { id: id },
     })

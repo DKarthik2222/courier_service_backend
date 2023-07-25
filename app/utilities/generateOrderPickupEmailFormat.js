@@ -1,4 +1,4 @@
-function generateOrderPickupEmailFormat ({companyName, customerNamme}) {
+function generateOrderPickupEmailFormat ({companyName, customerName}) {
 
     return `<!DOCTYPE html>
     <html>
@@ -42,7 +42,7 @@ function generateOrderPickupEmailFormat ({companyName, customerNamme}) {
           <h2>Order Status Update - ${companyName}</h2>
         </div>
         <div class="content">
-          <p>Hello ${customerNamme},</p>
+          <p>Hello ${customerName},</p>
           <p>We are thrilled to share the latest update on your order.</p>
           <p>Your order has been picked up by our dedicated delivery person and is now on its way to reach you soon.</p>
          
