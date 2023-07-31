@@ -308,6 +308,39 @@ exports.findDeliveryAgentByEmail = (req, res) => {
     });
 };
 
+// Get all active delivery agents
+
+exports.getAllActiveDeliveryAgents = (req, res) => {
+  Employee.findAll({
+    where: {
+      roleId: 3,
+      isActive: 1,
+    },
+    attributes: { exclude: ["password", "salt"] },
+  })
+    .then((data) => {
+      if (data) {
+        res.send({
+          status: "Success",
+          message: "Delivery Agents Fetched Successfully",
+          data: data,
+        });
+      } else {
+        res.status(404).send({
+          status: "Failure",
+          message: `Cannot find Delivery Agents`,
+          data: null,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Error retrieving Delivery Agents",
+      });
+    });
+}
+
 // Update a Employee by the id in the request
 exports.update = async (req, res) => {
   const id = req.params.id;
