@@ -148,12 +148,17 @@ exports.create = async (req, res) => {
             await Session.create(session).then(async (data) => {
               let sessionId = data.id;
               await encrypt(sessionId);
-              sendMail(req.body.email, 'Employee Onboarding',  'employeeOnBoard', {
-                userName: req.body.email,
-                password: req.body.password,
-                employeeName: req.body.firstName,
-                position: req.body.roleId === 2 ? 'CLERK' : 'DELIVERY AGENT',
-              })
+              sendMail(
+                req.body.email,
+                "Employee Onboarding",
+                "employeeOnBoard",
+                {
+                  userName: req.body.email,
+                  password: req.body.password,
+                  employeeName: req.body.firstName,
+                  position: req.body.roleId === 2 ? "CLERK" : "DELIVERY AGENT",
+                }
+              );
               res.send({
                 status: "Success",
                 message: "Employee created successfully",
@@ -316,6 +321,12 @@ exports.getAllActiveDeliveryAgents = (req, res) => {
       roleId: 3,
       isActive: 1,
     },
+    include: [
+      {
+        model: db.roles,
+        as: "role",
+      },
+    ],
     attributes: { exclude: ["password", "salt"] },
   })
     .then((data) => {
@@ -335,11 +346,10 @@ exports.getAllActiveDeliveryAgents = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Error retrieving Delivery Agents",
+        message: err.message || "Error retrieving Delivery Agents",
       });
     });
-}
+};
 
 // Update a Employee by the id in the request
 exports.update = async (req, res) => {
@@ -428,19 +438,19 @@ exports.delete = async (req, res) => {
     let employee = { isActive: false };
     const employeeDetails = await Employee.findOne({
       where: {
-        empId: id
-      }
-    })
-    const employeeEmail = employeeDetails?.email
-    const employeeName = employeeDetails?.firstName
+        empId: id,
+      },
+    });
+    const employeeEmail = employeeDetails?.email;
+    const employeeName = employeeDetails?.firstName;
     await Employee.update(employee, {
       where: { empId: id },
     })
       .then((number) => {
         if (number == 1) {
-          sendMail(employeeEmail, 'Access Revoked', 'employeeTermination', {
-            employeeName: employeeName
-          })
+          sendMail(employeeEmail, "Access Revoked", "employeeTermination", {
+            employeeName: employeeName,
+          });
           res.send({
             status: "Success",
             message: "Employee was deleted successfully!",
